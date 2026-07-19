@@ -1,0 +1,41 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate skill structure
+        run: |
+          set -euo pipefail
+
+          test -f SKILL.md || { echo "FAIL: SKILL.md is missing"; exit 1; }
+
+          NAME=$(sed -n 's/^name:[[:space:]]*//p' SKILL.md | head -1 | tr -d '"' | xargs)
+          DESC=$(sed -n 's/^description:[[:space:]]*//p' SKILL.md | head -1)
+
+          if [ -z "$NAME" ]; then
+            echo "FAIL: name: is empty or missing in SKILL.md frontmatter"
+            exit 1
+          fi
+
+          if [ -z "$DESC" ]; then
+            echo "FAIL: description: is empty or missing in SKILL.md frontmatter"
+            exit 1
+          fi
+
+          DIRNAME=$(basename "$(pwd)")
+          if [ "$NAME" != "$DIRNAME" ]; then
+            echo "FAIL: name: ($NAME) does not match repo directory name ($DIRNAME)"
+            exit 1
+          fi
+
+          test -f README.md || { echo "FAIL: README.md is missing"; exit 1; }
+          grep -q "SKILL.md" README.md || { echo "FAIL: README.md does not link to SKILL.md"; exit 1; }
+
+          echo "OK: name=$NAME, description present, README links to SKILL.md"
