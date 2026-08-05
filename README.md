@@ -176,6 +176,17 @@ and reports the exact ratio against the 4.5:1 (text) or 3:1 (large
 text/non-text) thresholds. From a screenshot alone it only reports a ratio
 it can state with confidence; ambiguous colors are marked not verifiable.
 
+**Do I still need axe-core or Lighthouse?**
+Yes, and they run in different places. Automated scanners are rule engines
+against a rendered DOM: they catch missing alt text, unlabeled inputs, ARIA
+misuse, and contrast on elements they can compute, and they run on every
+commit without anyone deciding to look. What they cannot report is a state
+that was never built, a tab order that follows the DOM but not the reading
+order a person sees, or an error message that names the problem without
+saying what to do next. Those are three of the six categories in this gate.
+Keep a scanner in CI as the floor, and run this gate against the screens a
+PR actually changes.
+
 **What's the difference between this and a design review?**
 This skill checks pass/fail criteria against fixed standards. A design
 review judges subjective quality - hierarchy, polish, layout intent. Use
