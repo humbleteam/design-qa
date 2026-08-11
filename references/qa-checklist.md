@@ -101,3 +101,17 @@ luminance and `L2` the darker one's, so the ratio is always >= 1.
 
 A category with no evidence in the input is **not verifiable** - it is never
 recorded as a pass.
+
+## Coverage reference
+
+Coverage decides which verdict is available. Count the categories that
+produced evidence and put `Coverage: <n>/6` on the verdict line.
+
+| Coverage | No issues found | Issues found |
+|---|---|---|
+| 6 of 6 | PASS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
+| 1-5 of 6 | PASS WITH GAPS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
+| 0 of 6 | NOT VERIFIABLE | - |
+
+PASS is the one verdict coverage can veto: it needs all six categories to have
+been checked, not merely to have turned up nothing.

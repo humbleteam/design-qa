@@ -158,19 +158,28 @@ Exact shape:
    After: ...
 
 **Verdict: FAIL** - <N> P0 issue(s) in <category list>. Fix P0s before
-merge. <If any category is N/V, add:> Not verifiable: <category list> -
-<what input would resolve it>.
+merge.
+Coverage: <n>/6 categories verifiable. <If n < 6, add:> Not verifiable:
+<category list> - <what input would resolve it>.
 ```
 
-Verdict logic:
+Verdict logic - first match wins:
 
 - **FAIL** - one or more P0 issues anywhere.
-- **PASS WITH FOLLOW-UPS** - zero P0, at least one P1 or P2.
-- **PASS** - zero issues at any severity across every category that had
+- **NOT VERIFIABLE** - no P0, and no category produced evidence. The gate did
+  not run; say which input would let it run, and never render this as a pass.
+- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2, at least one
+  category with evidence.
+- **PASS** - zero issues at any severity, and all six categories produced
   evidence.
-- If one or more categories are N/V, the verdict still stands on what was
-  checked, but the verdict line must name the gap and never round N/V up to
-  PASS.
+- **PASS WITH GAPS** - zero issues found, but one or more categories are N/V.
+
+Coverage never upgrades a verdict, and PASS is the one outcome it can veto: a
+run that found nothing wrong in two categories and could not see the other
+four is not the same result as a screen that cleared all six. Count the
+categories that produced evidence, put `Coverage: <n>/6 categories verifiable`
+on the verdict line whatever the verdict is, and when `n` is below 6 name the
+N/V categories and what would unlock each.
 
 ## Edge cases
 
@@ -178,6 +187,10 @@ Verdict logic:
   as N/V - say exactly what additional input (hover screenshot, CSS, a
   drivable URL) would unlock each one. Contrast, touch targets (if scale is
   known), and copy usually stay verifiable.
+- **Nothing came back verifiable.** A screenshot at an unstated scale, with
+  no legible text and no solid-fill color to sample, supports none of the six
+  categories. The verdict is NOT VERIFIABLE, never PASS: an empty fix list
+  here means nothing was checked, not that nothing was wrong.
 - **Dark mode supplied.** Run contrast as two separate rows, one per theme,
   in the same table.
 - **Design tokens supplied.** Check artifact values against the token set

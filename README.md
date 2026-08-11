@@ -114,6 +114,7 @@ The following is an illustrative example, not a real audit of any product.
 
 **Verdict: FAIL** - 3 P0 issues (contrast, responsive, keyboard). Fix P0s
 before merge.
+Coverage: 6/6 categories verifiable.
 ```
 
 ## How it works
@@ -126,7 +127,10 @@ before merge.
   assumed.
 - A category with nothing to check against is reported as not verifiable,
   with a note on what would unlock it - a gate that rounds uncertainty up
-  to "pass" isn't a gate.
+  to "pass" isn't a gate. The verdict obeys the same rule: every run reports
+  `Coverage: <n>/6`, PASS needs all six categories actually checked, a clean
+  run with gaps comes back PASS WITH GAPS, and an artifact that supports no
+  category at all comes back NOT VERIFIABLE.
 - Every failure gets a severity tag: P0 for a binary WCAG 2.2
   success-criterion breach, P1 for a real gap that isn't a legal-grade
   breach, P2 for polish. Only P0 forces the verdict to FAIL.
