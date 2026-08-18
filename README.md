@@ -88,7 +88,7 @@ The following is an illustrative example, not a real audit of any product.
 | Category | Status | Evidence |
 |---|---|---|
 | Component states | FAIL | No `:disabled` or `.error` rule for the promo input |
-| Contrast | FAIL | Body text #8a8a8a on #ffffff = 2.8:1 (needs 4.5:1) |
+| Contrast | FAIL | Body text #8a8a8a on #ffffff = 3.45:1 (needs 4.5:1) |
 | Touch targets | PASS | All buttons >= 44x44 CSS px |
 | Responsive | FAIL | Fixed `min-width: 400px` overflows at 320px |
 | Keyboard | FAIL | `.promo-input:focus { outline: none; }`, no replacement |
@@ -97,8 +97,8 @@ The following is an illustrative example, not a real audit of any product.
 ## Fixes
 
 1. Body text fails contrast - P0
-   Before: #8a8a8a on #ffffff = 2.8:1
-   After: darken to #6b6b6b or darker (4.5:1 minimum)
+   Before: #8a8a8a on #ffffff = 3.45:1
+   After: darken to #767676 (4.54:1) or #6b6b6b (5.33:1)
 
 2. Summary card overflows at 320px - P0
    Before: `.summary-card { min-width: 400px; }`
@@ -111,6 +111,12 @@ The following is an illustrative example, not a real audit of any product.
 4. Promo input has no error state - P1
    Before: invalid codes submit silently
    After: add an `.error` class with a red border and inline message
+
+5. Promo input has no disabled state - P1
+   Before: no `:disabled` rule - the field looks editable while the order
+   is submitting, and typing into it is silently discarded
+   After: add `:disabled { background: #f1f1f1; color: #6b6b6b; cursor: not-allowed; }`
+   (4.72:1, still legible) and set the attribute for the duration of the request
 
 **Verdict: FAIL** - 3 P0 issues (contrast, responsive, keyboard). Fix P0s
 before merge.
@@ -133,7 +139,10 @@ Coverage: 6/6 categories verifiable.
   category at all comes back NOT VERIFIABLE.
 - Every failure gets a severity tag: P0 for a binary WCAG 2.2
   success-criterion breach, P1 for a real gap that isn't a legal-grade
-  breach, P2 for polish. Only P0 forces the verdict to FAIL.
+  breach, P2 for polish. Only P0 forces the verdict to FAIL. Each of the nine
+  component states maps to a tag, so a missing hover or disabled rule cannot
+  be reported in the table and then quietly dropped from the fix list, and
+  anything the map doesn't cover is P1 rather than an invented P0.
 - Fixes follow a Before/After shape: Before is the specific, observable
   problem; After is a change implementable in under an hour.
 - A supplied design-token file is checked against first, ahead of generic

@@ -52,7 +52,9 @@ with the cursor over the primary button, or the CSS `:hover` rule"). For
 HTML/CSS, grep the stylesheet for `:hover`, `:focus`, `:disabled`,
 `:empty`/skeleton classes, and `.error`/`.is-error` style classes; a state
 with zero matching rules is a FAIL if the component is interactive, N/V if
-you cannot tell whether the component is interactive at all.
+you cannot tell whether the component is interactive at all. Every one of
+these nine states has a severity in Step 3 - none of them is reported and
+then left out of the fix list.
 
 ### 2. Contrast (WCAG 2.2 SC 1.4.3, SC 1.4.11)
 Text against its background needs a 4.5:1 ratio (3:1 for text 24px+ or 19px+
@@ -118,6 +120,34 @@ Every FAIL gets one severity tag:
   say what to do next.
 - **P2** - polish: icon/label mismatch, inconsistent casing, a state that
   exists but looks unfinished.
+
+**Every FAIL gets a bucket.** The three definitions above name the failures
+they were written for, and category 1 checks nine states while only two of
+them appear: a missing focus indicator is P0 under SC 2.4.7, and a missing
+loading, empty, or error state is P1. Hover, active, disabled, and long
+content are checked in Step 2 and mandated as a FAIL when an interactive
+component has no rule for them, so leaving them unbucketed forces the fix
+list either to drop a failure the table already reported or to cite a
+success criterion that does not cover it. Map them like this:
+
+| Missing or broken state | Severity |
+|---|---|
+| Focus indicator | P0 - SC 2.4.7, a keyboard user cannot see where they are |
+| Long content that clips or overlaps at 320px | P0 - SC 1.4.10, content is lost at the reflow width |
+| Loading, empty, or error on a flow that reaches it | P1 - the flow has no defined behavior at a point normal use reaches |
+| Disabled on a control that can become unavailable | P1 - the control still looks operable while it is not |
+| Hover on a pointer-operated control | P1 - nothing marks the element as interactive before it is clicked |
+| Long content that clips or overlaps above 320px | P1 - content is lost, outside the width the criterion names |
+| Active or pressed | P2 - the action still completes and reports its result |
+| Default inconsistent with the rest of the interface | P2 - unless the mismatch itself breaches another category, which files there instead |
+| A state that exists but looks unfinished | P2 |
+
+A FAIL matching no line here is P1 with the reason stated. It is never
+promoted to P0: P0 means a named success criterion was breached, and citing
+one that does not cover the finding is the invented violation the closing
+section rules out. Dropping it instead is the other illegal move - the
+category already reported FAIL, so a fix list without it contradicts the
+table directly above it.
 
 Write each fix as:
 

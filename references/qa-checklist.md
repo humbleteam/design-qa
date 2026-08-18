@@ -102,6 +102,26 @@ luminance and `L2` the darker one's, so the ratio is always >= 1.
 A category with no evidence in the input is **not verifiable** - it is never
 recorded as a pass.
 
+Section 1 checks nine states and the three definitions above name only two of
+them, so a missing hover or disabled rule can be reported as a failure and then
+have nowhere to go in the fix list. Each state maps to a tag:
+
+| Missing or broken state | Tag |
+|---|---|
+| Focus indicator | P0 (SC 2.4.7) |
+| Long content clipping or overlapping at 320px | P0 (SC 1.4.10) |
+| Loading, empty, or error state a flow reaches in normal use | P1 |
+| Disabled state on a control that can become unavailable | P1 |
+| Hover state on a pointer-operated control | P1 |
+| Long content clipping or overlapping above 320px | P1 |
+| Active/pressed state | P2 |
+| Default state inconsistent with the rest of the interface | P2 |
+| A state that exists but looks unfinished | P2 |
+
+Anything else that fails is P1 with the reason stated. Nothing is promoted to
+P0 without a success criterion that actually covers it, and nothing that failed
+is left out of the fix list.
+
 ## Coverage reference
 
 Coverage decides which verdict is available. Count the categories that

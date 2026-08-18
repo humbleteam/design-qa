@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0] - 2026-08-18
+
+- Every component-state failure now has a severity bucket. Step 2 checks nine
+  states and mandates a FAIL when an interactive component has no rule for one
+  of them, while Step 3 named only two: focus (P0) and loading/empty/error
+  (P1). Hover, active, disabled and long content matched nothing, so a stated
+  FAIL had to be dropped from the fix list or promoted to P0 by citing a
+  success criterion that does not cover it. Added a state-to-severity map and a
+  P1 default for anything it does not name, with promotion to P0 ruled out.
+- `references/qa-checklist.md` carries the same map under Severity reference.
+- Corrected the contrast ratio in the README example: #8a8a8a on #ffffff is
+  3.45:1, not 2.8:1, by the relative-luminance formula this repo ships in
+  `references/qa-checklist.md`. The suggested fix now states the ratio of each
+  replacement color it names.
+- The README example listed a missing `:disabled` rule as evidence for the
+  component-states FAIL and then had no fix line for it - the bug above in
+  miniature. It gains one.
+
 ## [1.2.0] - 2026-08-11
 
 - Verdict logic now depends on coverage, closing a hole that let a fail-closed
