@@ -106,6 +106,31 @@ do about it ("Card declined - check the number and try again" passes;
 "Something went wrong" fails). This category is verifiable from a screenshot
 whenever text is legible in it.
 
+### Rolling item results into one category status
+
+Every category above checks more than one thing: nine states in category 1, one
+row per text and non-text pair in category 2, every interactive target in
+category 3. The table in Step 4 has one status cell per category, and the items
+inside a category routinely disagree, so the roll-up needs a rule instead of a
+judgment call each run. Resolve the cell by precedence, highest first:
+
+1. **FAIL** if any item in the category failed. A found failure stands whatever
+   else could not be checked.
+2. **N/V** if nothing failed and at least one item could not be checked. A
+   category where two items passed and seven were invisible has not been
+   checked, and PASS would claim it was.
+3. **PASS** only when every item resolved and none failed.
+
+The evidence cell then names the split rather than one example, so N/V does not
+erase the items that did pass: `2 of 9 states verifiable (default, focus); no
+hover, active, disabled, loading, empty, error or overflow rule in the input`.
+
+Coverage counts the same way: a category counts toward `<n>/6` only when no item
+in it is left N/V, whether it ended PASS or FAIL. The status cell answers whether
+anything failed, the coverage number answers whether everything was looked at,
+and a failure found in a category nobody could finish inspecting is not full
+coverage of that category.
+
 ## Step 3 - assign severity and write fixes
 
 Every FAIL gets one severity tag:
@@ -196,10 +221,10 @@ Coverage: <n>/6 categories verifiable. <If n < 6, add:> Not verifiable:
 Verdict logic - first match wins:
 
 - **FAIL** - one or more P0 issues anywhere.
-- **NOT VERIFIABLE** - no P0, and no category produced evidence. The gate did
-  not run; say which input would let it run, and never render this as a pass.
-- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2, at least one
-  category with evidence.
+- **NOT VERIFIABLE** - no P0, and not one item in any category resolved. The
+  gate did not run; say which input would let it run, and never render this as
+  a pass.
+- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2.
 - **PASS** - zero issues at any severity, and all six categories produced
   evidence.
 - **PASS WITH GAPS** - zero issues found, but one or more categories are N/V.
@@ -207,9 +232,17 @@ Verdict logic - first match wins:
 Coverage never upgrades a verdict, and PASS is the one outcome it can veto: a
 run that found nothing wrong in two categories and could not see the other
 four is not the same result as a screen that cleared all six. Count the
-categories that produced evidence, put `Coverage: <n>/6 categories verifiable`
-on the verdict line whatever the verdict is, and when `n` is below 6 name the
-N/V categories and what would unlock each.
+categories where every item resolved to PASS or FAIL with none left N/V, put
+`Coverage: <n>/6 categories verifiable` on the verdict line whatever the verdict
+is, and when `n` is below 6 name the N/V categories and what would unlock each.
+
+`Coverage: 0/6` and NOT VERIFIABLE are different tests and must not be collapsed.
+Coverage counts categories finished to the last item, so a run that read three
+states and a contrast pair and could see nothing else reports 0/6 while having
+produced real evidence - and a failure among those items is a finding that keeps
+its severity and its fix line. NOT VERIFIABLE is for the run where no item
+anywhere resolved, which is the only case where an empty fix list means nothing
+was checked.
 
 ## Edge cases
 
@@ -221,6 +254,10 @@ N/V categories and what would unlock each.
   no legible text and no solid-fill color to sample, supports none of the six
   categories. The verdict is NOT VERIFIABLE, never PASS: an empty fix list
   here means nothing was checked, not that nothing was wrong.
+- **A category where some items pass and others cannot be checked.** The cell
+  is N/V, not PASS, and the evidence names both halves - see the roll-up rule
+  at the end of Step 2. A screenshot showing a clean default state has verified
+  one of nine states, not the category.
 - **Dark mode supplied.** Run contrast as two separate rows, one per theme,
   in the same table.
 - **Design tokens supplied.** Check artifact values against the token set

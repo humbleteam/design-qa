@@ -124,14 +124,28 @@ is left out of the fix list.
 
 ## Coverage reference
 
-Coverage decides which verdict is available. Count the categories that
-produced evidence and put `Coverage: <n>/6` on the verdict line.
+Coverage decides which verdict is available. Count the categories where every
+box resolved, and put `Coverage: <n>/6` on the verdict line.
+
+Each section above holds more than one box - nine in section 1, five in section
+2 - and one section is one status cell, so the boxes roll up by precedence:
+**FAIL** if any box failed, otherwise **N/V** if any box could not be checked,
+and **PASS** only when every box resolved and none failed. A section counts
+toward `<n>` only when nothing in it is left unchecked, whichever of the three
+it ended on. Status answers whether anything failed; coverage answers whether
+everything was looked at, and a section with a known failure and six unread
+boxes is not a fully inspected section.
 
 | Coverage | No issues found | Issues found |
 |---|---|---|
 | 6 of 6 | PASS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
 | 1-5 of 6 | PASS WITH GAPS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
-| 0 of 6 | NOT VERIFIABLE | - |
+| 0 of 6 | PASS WITH GAPS if any box resolved, else NOT VERIFIABLE | FAIL if any P0, else PASS WITH FOLLOW-UPS |
 
 PASS is the one verdict coverage can veto: it needs all six categories to have
 been checked, not merely to have turned up nothing.
+
+`0 of 6` is not the same as NOT VERIFIABLE. A run can read a few boxes in
+several sections, finish none of them, and still have found something real;
+coverage reports 0 and the finding keeps its tag. NOT VERIFIABLE belongs to the
+run where no box anywhere resolved.

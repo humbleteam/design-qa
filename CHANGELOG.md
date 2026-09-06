@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.4.0] - 2026-09-06
+
+- A category whose items disagree now resolves by a stated rule. Every category
+  checks several things - nine states in category 1, one row per pair in
+  category 2, every target in category 3 - and the output table has one status
+  cell per category, with no rule for the mixed case. The two available moves
+  were both wrong: PASS on a category where two states were read and seven were
+  invisible claims a check that never ran, and N/V erases the items that did
+  resolve. Status now rolls up by precedence (FAIL if anything failed, else N/V
+  if anything is unchecked, else PASS), and the evidence cell names the split.
+- Coverage counts the same way. A category counts toward `<n>/6` only when no
+  item in it is left unverifiable, whatever its status cell says, so a screenshot
+  run can no longer report full coverage on a category it saw one frame of. This
+  is the coverage veto the 1.2.0 verdict rules applied between categories, now
+  applied inside one.
+- `references/qa-checklist.md` carries the roll-up rule under Coverage reference,
+  where the nine boxes of section 1 make the mixed case concrete for a manual run.
+- `Coverage: 0/6` and the NOT VERIFIABLE verdict are now stated as different
+  tests. Under the stricter count a run can read a few items across several
+  categories, finish none of them, and report 0 while having found something
+  real, so NOT VERIFIABLE is now reserved for the run where no item anywhere
+  resolved. Without that split, a P1 found in a half-read category would have
+  been reported as a gate that never ran.
+- The README's screenshot usage line said states and keyboard come back "mostly"
+  not verifiable, which was the ambiguity in one word. Under the roll-up rule
+  they come back not verifiable, and the How-it-works list says why.
+
 ## [1.3.0] - 2026-08-18
 
 - Every component-state failure now has a severity bucket. Step 2 checks nine

@@ -70,8 +70,9 @@ Paste `SKILL.md` into the system prompt or a project rules file.
 ## Usage
 
 - "QA this screenshot before we ship it" - runs the full gate against a
-  pasted image; states and keyboard checks come back mostly "not
-  verifiable" with a note on what would unlock them.
+  pasted image; states and keyboard come back "not verifiable" with a note
+  on what would unlock them, since one static frame shows one of the nine
+  states and none of the keyboard behavior.
 - "Run a design QA pass on this PR" - point it at the changed HTML/CSS
   files; every category is fully checkable from source.
 - "Is humbleteam.com/pricing ready to ship at mobile width?" - point it at
@@ -137,6 +138,12 @@ Coverage: 6/6 categories verifiable.
   `Coverage: <n>/6`, PASS needs all six categories actually checked, a clean
   run with gaps comes back PASS WITH GAPS, and an artifact that supports no
   category at all comes back NOT VERIFIABLE.
+- The same rule holds one level down, inside a category. Nine states and five
+  contrast pairs roll up to a single status cell: any failure makes it FAIL,
+  anything left unseen makes it not verifiable, and PASS means every item in
+  it was checked and passed. The evidence column names the split - two states
+  read, seven invisible - so a partly inspected category can't reach the
+  verdict line looking like a clean one.
 - Every failure gets a severity tag: P0 for a binary WCAG 2.2
   success-criterion breach, P1 for a real gap that isn't a legal-grade
   breach, P2 for polish. Only P0 forces the verdict to FAIL. Each of the nine
