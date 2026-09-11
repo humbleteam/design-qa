@@ -149,3 +149,8 @@ been checked, not merely to have turned up nothing.
 several sections, finish none of them, and still have found something real;
 coverage reports 0 and the finding keeps its tag. NOT VERIFIABLE belongs to the
 run where no box anywhere resolved.
+
+A section that failed on one box with others still unread belongs to neither
+list under the count: it is not not-verifiable, and it is not counted. Name it
+on the verdict line separately, with what is missing, so counted plus
+not-verifiable plus failed-but-unfinished comes to six.

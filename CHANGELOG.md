@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.5.0] - 2026-09-11
+
+- The README gains a second worked example: one screenshot, partial coverage. Every
+  version since 1.2.0 has written rules for the run that cannot finish - the coverage
+  veto, the roll-up precedence, the split evidence cell, `Coverage: 0/6` against NOT
+  VERIFIABLE - and the only rendered output in the repo was an HTML/CSS run where all
+  six categories resolve. The input the skill documents as its most common one had no
+  example of its output anywhere. The new block shows a category reading N/V with two of
+  nine states verified, a category reading FAIL on a pair it sampled while two others
+  were never sampleable, `Coverage: 2/6`, and a verdict that is still actionable.
+- Writing that example truthfully turned up a hole in the verdict line. Coverage counts
+  only categories finished to the last item, and the not-verifiable list names only
+  categories that are N/V, so a category that ended FAIL with items still unchecked
+  appears in neither: `Coverage: 2/6` printed above three named N/V categories leaves a
+  fourth unaccounted for, and the reader cannot tell whether it was missed or never
+  existed. Step 4 now names those categories on the same line, kept separate from the
+  N/V list, so counted plus not verifiable plus failed-before-finishing comes to six.
+- `references/qa-checklist.md` carries the same reconciliation under Coverage reference.
+
 ## [1.4.0] - 2026-09-06
 
 - A category whose items disagree now resolves by a stated rule. Every category

@@ -236,6 +236,15 @@ categories where every item resolved to PASS or FAIL with none left N/V, put
 `Coverage: <n>/6 categories verifiable` on the verdict line whatever the verdict
 is, and when `n` is below 6 name the N/V categories and what would unlock each.
 
+Name the categories that ended FAIL with items still unchecked on that line too,
+with what is missing, kept separate from the N/V list. Such a category is in
+neither group the line currently reports: it is not N/V, because it found a
+failure, and it does not count toward `<n>`, because it was never finished. Leave
+it out and the line stops adding up - `Coverage: 2/6` above three named N/V
+categories sends the reader hunting for a fourth. The three numbers are meant to
+reconcile: categories counted, plus categories not verifiable, plus categories
+that failed before they finished, equals six.
+
 `Coverage: 0/6` and NOT VERIFIABLE are different tests and must not be collapsed.
 Coverage counts categories finished to the last item, so a run that read three
 states and a contrast pair and could see nothing else reports 0/6 while having

@@ -81,7 +81,12 @@ Paste `SKILL.md` into the system prompt or a project rules file.
 
 ## Example output
 
-The following is an illustrative example, not a real audit of any product.
+Two runs, both illustrative examples rather than real audits of any product. The first
+reads HTML/CSS, where every category is checkable. The second reads one screenshot, which
+is the input most of these runs actually get, and where the interesting part is what the
+gate does with the categories it cannot finish.
+
+### HTML/CSS input - full coverage
 
 ```
 # Design QA - checkout-summary.html
@@ -123,6 +128,44 @@ The following is an illustrative example, not a real audit of any product.
 before merge.
 Coverage: 6/6 categories verifiable.
 ```
+
+### Single screenshot - partial coverage
+
+One frame of a settings panel, with the capture width stated as 1440px so targets can be
+measured against a real scale. Three categories cannot be finished from an image at all,
+contrast finds a failure and then runs out of sampleable pairs, and the run still returns
+a verdict somebody can act on.
+
+```
+# Design QA - settings-panel.png
+
+| Category | Status | Evidence |
+|---|---|---|
+| Component states | N/V | 2 of 9 states in frame (default, error); no hover, focus, active, disabled, loading, empty or overflow evidence in one image |
+| Contrast | FAIL | 3 of 5 pairs sampleable from solid fills; helper text #9B9B9B on #FFFFFF = 2.78:1 (needs 4.5:1) |
+| Touch targets | PASS | Capture width stated (1440px); all 6 controls measure 44x44 CSS px or larger, with clear spacing between adjacent ones |
+| Responsive | N/V | One capture at 1440px, nothing at or near 320px |
+| Keyboard | N/V | A static image shows no focus order, no focus indicator and no trap |
+| Copy | PASS | 7 labels and 2 buttons legible: sentence case, verb labels, icon and label agree; the visible error names the cause and the next step |
+
+## Fixes
+
+1. Helper text fails contrast - P0
+   Before: #9B9B9B on #FFFFFF = 2.78:1, on all 4 helper lines under the form fields
+   After: darken to #757575 (4.61:1), the smallest change that clears SC 1.4.3
+
+**Verdict: FAIL** - 1 P0 issue (contrast). Fix P0s before merge.
+Coverage: 2/6 categories verifiable. Not verifiable: component states (a hover, focus and
+disabled frame, or the CSS), responsive (a capture at 320px), keyboard (the CSS/JS or a
+drivable URL). Contrast ended FAIL with 2 of 5 pairs unresolved - the meaningful-icon and
+focus-indicator pairs need the CSS or a frame with a control focused.
+```
+
+Component states reads N/V with two states verified, because a category is only as checked
+as its least-checked item. Contrast reads FAIL on one pair while two others were never
+sampled - a found failure stands whatever else is missing - and it counts toward neither
+`2/6` nor the not-verifiable list, so the verdict line names it separately. Two categories
+were finished, three could not start, one found a failure before it finished: six.
 
 ## How it works
 
