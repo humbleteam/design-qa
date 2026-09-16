@@ -225,9 +225,20 @@ Verdict logic - first match wins:
   gate did not run; say which input would let it run, and never render this as
   a pass.
 - **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2.
-- **PASS** - zero issues at any severity, and all six categories produced
-  evidence.
-- **PASS WITH GAPS** - zero issues found, but one or more categories are N/V.
+- **PASS** - zero issues at any severity and `Coverage: 6/6` - every category
+  resolved every item it opened.
+- **PASS WITH GAPS** - zero issues found, coverage below 6, and at least one
+  item resolved somewhere.
+
+The last two are told apart by the coverage count, not by whether a category
+produced evidence, and written that way they are exclusive, so the order of the
+two lines cannot decide a run. This is the one rung where the ladder can
+misreport a clean screen as a checked one: a category that resolved two items
+and left seven N/V has produced evidence while counting nothing toward coverage,
+so a PASS condition reading "all six produced evidence" sends the commonest
+partial run - the one the roll-up rule at the end of Step 2 exists for - to PASS
+under a table showing an N/V cell, and PASS WITH GAPS is reachable only when a
+category resolved nothing at all.
 
 Coverage never upgrades a verdict, and PASS is the one outcome it can veto: a
 run that found nothing wrong in two categories and could not see the other
@@ -266,7 +277,10 @@ was checked.
 - **A category where some items pass and others cannot be checked.** The cell
   is N/V, not PASS, and the evidence names both halves - see the roll-up rule
   at the end of Step 2. A screenshot showing a clean default state has verified
-  one of nine states, not the category.
+  one of nine states, not the category. If the run found nothing wrong anywhere,
+  the verdict is PASS WITH GAPS: the category produced evidence but did not
+  finish, so it does not count toward coverage, and `Coverage: 6/6` is what PASS
+  asks for.
 - **Dark mode supplied.** Run contrast as two separate rows, one per theme,
   in the same table.
 - **Design tokens supplied.** Check artifact values against the token set

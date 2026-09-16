@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.0] - 2026-09-16
+
+- PASS now asks for `Coverage: 6/6` instead of "all six categories produced
+  evidence". The two are different tests, and the difference is the whole point of
+  the roll-up rule added in 1.4.0: a category that resolved two of nine states
+  produced evidence while counting nothing toward coverage. The verdict ladder is
+  first-match-wins with PASS above PASS WITH GAPS, so on the commonest partial run -
+  a screenshot, nothing wrong in what could be seen - the loose condition matched
+  first and the run reported PASS under a table showing an N/V cell, with PASS WITH
+  GAPS reachable only when a category resolved nothing at all. `references/qa-checklist.md`
+  has keyed both verdicts to the coverage count since 1.4.0 and the README says PASS
+  needs all six categories actually checked; SKILL.md was the file out of step.
+- PASS and PASS WITH GAPS are stated as exclusive conditions, so the order of the two
+  lines can no longer decide a run, and the edge case for a half-checked category now
+  names the verdict it produces.
+
 ## [1.5.0] - 2026-09-11
 
 - The README gains a second worked example: one screenshot, partial coverage. Every
