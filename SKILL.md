@@ -214,8 +214,10 @@ Exact shape:
 
 **Verdict: FAIL** - <N> P0 issue(s) in <category list>. Fix P0s before
 merge.
-Coverage: <n>/6 categories verifiable. <If n < 6, add:> Not verifiable:
-<category list> - <what input would resolve it>.
+Coverage: <n>/6 categories verifiable. <When n < 6, add whichever of these
+two groups has members:> Not verifiable: <category list> - <what input would
+resolve it>. <category> ended FAIL with <k> of <m> items unresolved - <what
+input would finish it>.
 ```
 
 Verdict logic - first match wins:
@@ -281,6 +283,13 @@ was checked.
   the verdict is PASS WITH GAPS: the category produced evidence but did not
   finish, so it does not count toward coverage, and `Coverage: 6/6` is what PASS
   asks for.
+- **A category that failed before it finished.** Contrast samples one pair
+  below threshold and cannot reach two others: the cell is FAIL, the failure
+  keeps its severity and its fix line, and the category counts toward neither
+  `<n>/6` nor the not-verifiable list. Name it on the verdict line as its own
+  group, with what would finish it. Counted, plus not verifiable, plus
+  failed-but-unfinished comes to six, and a line carrying only the first two
+  leaves the reader hunting for the categories missing from both.
 - **Dark mode supplied.** Run contrast as two separate rows, one per theme,
   in the same table.
 - **Design tokens supplied.** Check artifact values against the token set

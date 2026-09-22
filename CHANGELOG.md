@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.7.0] - 2026-09-22
+
+- The verdict-line template in Step 4 carries the third group. It offered two slots -
+  `Coverage: <n>/6` and a not-verifiable list - while the prose two paragraphs below it, the
+  coverage reference in `references/qa-checklist.md`, and the partial-coverage example in the
+  README all require a third: a category that ended FAIL with items still unchecked counts
+  toward neither, and the three groups are meant to add up to six. The template was the one
+  place a reader copies, and its single `<If n < 6, add:>` condition introduced only the
+  not-verifiable list, so a run whose coverage fell short purely because a category failed
+  before it finished had to write an empty list or write nothing and leave the numbers short.
+- That case is now an edge case, where a reader meets it. The list already carried its
+  sibling - a category where some items pass and others cannot be checked - and not the one
+  where a failure is found before the category is finished, which is the case the verdict
+  line has to report separately and the one the README example spends its closing paragraph
+  on.
+
 ## [1.6.0] - 2026-09-16
 
 - PASS now asks for `Coverage: 6/6` instead of "all six categories produced
