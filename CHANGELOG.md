@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.8.0] - 2026-09-30
+
+- The fix list is ordered, not capped. Step 3 closed with `Cap the list at the
+  most-impactful items if there are many`, one paragraph after the severity rules call
+  dropping a reported failure the illegal move: `the category already reported FAIL, so a
+  fix list without it contradicts the table directly above it`. Step 2 says the same of the
+  nine component states, `references/qa-checklist.md` says nothing that failed is left out
+  of the fix list, and the README says a missing state cannot be reported in the table and
+  then quietly dropped. The cap was the only surface out of step, it was the instruction
+  nearest the output shape a reader copies, and `if there are many` carried no number in a
+  skill that replaced judgment calls with rules everywhere else.
+- Most-impactful now decides order instead of membership: P0 first, then P1, then P2, and
+  inside a tag the category order of the table above. Grouping stays as the one move that
+  shortens the list, because one fix closes every element it names; failures needing
+  separate fixes keep separate lines however many there are.
+
 ## [1.7.0] - 2026-09-22
 
 - The verdict-line template in Step 4 carries the third group. It offered two slots -

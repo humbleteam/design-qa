@@ -182,9 +182,19 @@ N. <short title> - P<0/1/2>
    After: <concrete fix, implementable in under an hour>
 ```
 
-Cap the list at the most-impactful items if there are many; do not pad with
-trivial duplicates of the same issue on different elements - group repeats
-into one fix line and note the count ("applies to all 4 nav icons").
+Every FAIL in the table has a line here, and the list is ordered rather than
+trimmed: P0 first, then P1, then P2, and inside a tag the category order of
+the table above. Ordering is what puts the most-impactful items first. A cap
+would instead drop failures the table already reported, which is the illegal
+move the severity rules above name and which
+[references/qa-checklist.md](references/qa-checklist.md) states as nothing
+that failed is left out of the fix list.
+
+Grouping is the one thing that shortens the list. The same failure on several
+elements is one line carrying the count ("applies to all 4 nav icons"),
+because one fix closes all of them. Failures needing separate fixes stay
+separate lines however many there are - a screen with twenty distinct
+failures gets twenty lines, and the length is itself the finding.
 
 ## Step 4 - render the output
 
