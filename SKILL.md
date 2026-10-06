@@ -179,7 +179,8 @@ Write each fix as:
 ```
 N. <short title> - P<0/1/2>
    Before: <specific, observable fact - what's actually there>
-   After: <concrete fix, implementable in under an hour>
+   After: <concrete fix - implementable in under an hour, or the real fix at
+   its real size when it is larger>
 ```
 
 Every FAIL in the table has a line here, and the list is ordered rather than
@@ -195,6 +196,22 @@ elements is one line carrying the count ("applies to all 4 nav icons"),
 because one fix closes all of them. Failures needing separate fixes stay
 separate lines however many there are - a screen with twenty distinct
 failures gets twenty lines, and the length is itself the finding.
+
+The hour bound on After is there to keep a fix concrete: `improve
+keyboard support` is not a fix. It bounds how the fix is written, and it is
+not a test a finding has to pass to be reported. P0 is the tag most likely
+to exceed it, because a binary criterion breach is often structural - a
+keyboard trap inside a third-party date picker is closed by patching or
+replacing the widget, and a contrast breach carried by a design-system token
+is closed in the token set and at every call site. Where the real fix is
+larger than the bound, After states it at its real size and names what it
+touches instead of shrinking to fit: `replace or patch the vendor date picker
+(vendor-side fix, not an afternoon)`. Shrinking it is the failure the bound
+invites - an After small enough to pass the bound describes a workaround, the
+breach stays live, and the verdict line directly below still says to fix P0s
+before merge. An interim mitigation can ride along on the same line where one
+exists, labeled as holding the line rather than closing it, under the real
+fix and never in place of it.
 
 ## Step 4 - render the output
 

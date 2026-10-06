@@ -194,7 +194,9 @@ were finished, three could not start, one found a failure before it finished: si
   be reported in the table and then quietly dropped from the fix list, and
   anything the map doesn't cover is P1 rather than an invented P0.
 - Fixes follow a Before/After shape: Before is the specific, observable
-  problem; After is a change implementable in under an hour.
+  problem; After is a change implementable in under an hour. Where the real fix
+  is larger, which a P0 inside a third-party component often is, After states
+  the real fix at its real size instead of a workaround that fits the bound.
 - A supplied design-token file is checked against first, ahead of generic
   heuristics.
 - The full checklist stands alone as a manual reference:
@@ -249,6 +251,19 @@ order a person sees, or an error message that names the problem without
 saying what to do next. Those are three of the six categories in this gate.
 Keep a scanner in CI as the floor, and run this gate against the screens a
 PR actually changes.
+
+**What if a P0's fix takes longer than an hour?**
+Then After says so and states the real fix. The hour bound in the fix shape
+exists to stop "improve keyboard support" passing as a fix, not to decide what
+gets reported, and P0 is the tag most likely to exceed it: a binary WCAG breach
+is often structural. A keyboard trap inside a third-party widget is closed by
+patching or replacing the widget, and a contrast breach carried by a
+design-system token is closed in the token set and at every call site. Write the
+real fix at its real size, and put any interim mitigation under it, labeled as
+holding the line rather than closing it. What the shape will not accept is a
+workaround small enough to fit the hour standing in as the fix, because the
+verdict line directly below says to fix P0s before merge and the breach would
+still be live.
 
 **What's the difference between this and a design review?**
 This skill checks pass/fail criteria against fixed standards. A design

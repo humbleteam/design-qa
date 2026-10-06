@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.9.0] - 2026-10-06
+
+- A P0 whose fix is not an hour of work now has somewhere to be written. The fix shape
+  asked for an `After: <concrete fix, implementable in under an hour>` with no branch for
+  the case where the real fix is larger, and P0 is the tag most likely to be larger,
+  because a binary criterion breach is often structural: a keyboard trap inside a
+  third-party widget is closed by patching or replacing the widget, and a contrast breach
+  carried by a design-system token is closed in the token set and at every call site. So
+  the one severity that forces the verdict to FAIL and blocks a merge was the one severity
+  whose fix the output shape could not describe.
+- The three ways out were all wrong. Dropping the line is already illegal twice over, in
+  the severity rules (`the category already reported FAIL, so a fix list without it
+  contradicts the table directly above it`) and in `references/qa-checklist.md`. Writing a
+  workaround small enough to fit the bound reports a P0 as fixed while the breach is still
+  live, directly under a verdict line that says to fix P0s before merge. Stretching the
+  bound silently leaves it meaning nothing anywhere it is applied.
+- The bound now reads as what it is. `After` takes a fix implementable in under an hour,
+  or the real fix at its real size when it is larger, stated with what it touches. The
+  hour is there to keep a fix concrete - `improve keyboard support` is not a fix - and it
+  is not a test a finding has to pass to be reported. An interim mitigation may ride along
+  on the same line, labeled as holding the line rather than closing it, under the real fix
+  and never in place of it.
+- Both surfaces that stated the bound moved together: the fix template in Step 3 and the
+  README's `How it works` restatement. New FAQ answer, `What if a P0's fix takes longer
+  than an hour?`, carries the case for readers who never open SKILL.md. No severity,
+  verdict or coverage rule changed - a P0 is still a P0, the verdict is still FAIL, and the
+  fix list still carries a line for every failure in the table.
+
 ## [1.8.0] - 2026-09-30
 
 - The fix list is ordered, not capped. Step 3 closed with `Cap the list at the
