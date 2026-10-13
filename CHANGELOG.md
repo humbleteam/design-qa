@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.10.0] - 2026-10-13
+
+- A run with findings and a coverage gap has its own verdict, `PASS WITH FOLLOW-UPS AND
+  GAPS`. Coverage vetoed one word only: `PASS` needed `Coverage: 6/6` and a clean run
+  below six came back `PASS WITH GAPS`, while every run with a P1 or P2 and no P0 came
+  back `PASS WITH FOLLOW-UPS` at any coverage. So one P2 found in the one category a
+  screenshot can finish took the same four words as a screen that cleared all six, and the
+  words are what a merge gate reads. The count was printed on the verdict line in both
+  runs, which is why the gap was easy to miss and did not make it harmless: the number
+  said the screen had not been looked at and the word said it had passed with follow-ups.
+  The ladder now states a coverage condition on every rung, so its six rungs are mutually
+  exclusive and first-match-wins cannot decide a run, and the two questions it answers -
+  did anything fail, and was everything looked at - have one word each per outcome. The
+  coverage reference table in `references/qa-checklist.md` carried the asymmetry in plain
+  sight, with the issues-found column giving one answer on all three coverage rows while
+  the no-issues column changed on every one; both columns now change at the 6-of-6 line,
+  and `FAIL` is the one word coverage leaves alone, because a P0 blocks the merge whatever
+  else was seen. The partly inspected category edge case gains the findings branch, and
+  the README's verdict bullet names the new rung. No severity rule, roll-up rule or
+  coverage count changed, and both worked examples end `FAIL`, so neither moved.
+
 ## [1.9.0] - 2026-10-06
 
 - A P0 whose fix is not an hour of work now has somewhere to be written. The fix shape

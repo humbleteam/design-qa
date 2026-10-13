@@ -179,7 +179,8 @@ were finished, three could not start, one found a failure before it finished: si
   with a note on what would unlock it - a gate that rounds uncertainty up
   to "pass" isn't a gate. The verdict obeys the same rule: every run reports
   `Coverage: <n>/6`, PASS needs all six categories actually checked, a clean
-  run with gaps comes back PASS WITH GAPS, and an artifact that supports no
+  run with gaps comes back PASS WITH GAPS, a run with findings and gaps comes
+  back PASS WITH FOLLOW-UPS AND GAPS, and an artifact that supports no
   category at all comes back NOT VERIFIABLE.
 - The same rule holds one level down, inside a category. Nine states and five
   contrast pairs roll up to a single status cell: any failure makes it FAIL,

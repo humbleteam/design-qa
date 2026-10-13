@@ -139,11 +139,14 @@ boxes is not a fully inspected section.
 | Coverage | No issues found | Issues found |
 |---|---|---|
 | 6 of 6 | PASS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
-| 1-5 of 6 | PASS WITH GAPS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
-| 0 of 6 | PASS WITH GAPS if any box resolved, else NOT VERIFIABLE | FAIL if any P0, else PASS WITH FOLLOW-UPS |
+| 1-5 of 6 | PASS WITH GAPS | FAIL if any P0, else PASS WITH FOLLOW-UPS AND GAPS |
+| 0 of 6 | PASS WITH GAPS if any box resolved, else NOT VERIFIABLE | FAIL if any P0, else PASS WITH FOLLOW-UPS AND GAPS |
 
-PASS is the one verdict coverage can veto: it needs all six categories to have
-been checked, not merely to have turned up nothing.
+Coverage qualifies both columns. FAIL is the one word it leaves alone, because a
+P0 blocks the merge at any coverage and the count changes nothing about that.
+Everywhere else the word changes at the 6-of-6 line: the count says whether the
+screen was looked at, and a verdict that could be read as a clean bill has to
+carry that in the word and not only in the number beside it.
 
 `0 of 6` is not the same as NOT VERIFIABLE. A run can read a few boxes in
 several sections, finish none of them, and still have found something real;

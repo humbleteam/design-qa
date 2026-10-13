@@ -253,25 +253,33 @@ Verdict logic - first match wins:
 - **NOT VERIFIABLE** - no P0, and not one item in any category resolved. The
   gate did not run; say which input would let it run, and never render this as
   a pass.
-- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2.
+- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2, and `Coverage: 6/6`.
+- **PASS WITH FOLLOW-UPS AND GAPS** - no P0, at least one P1 or P2, and
+  coverage below 6.
 - **PASS** - zero issues at any severity and `Coverage: 6/6` - every category
   resolved every item it opened.
 - **PASS WITH GAPS** - zero issues found, coverage below 6, and at least one
   item resolved somewhere.
 
-The last two are told apart by the coverage count, not by whether a category
-produced evidence, and written that way they are exclusive, so the order of the
-two lines cannot decide a run. This is the one rung where the ladder can
-misreport a clean screen as a checked one: a category that resolved two items
-and left seven N/V has produced evidence while counting nothing toward coverage,
-so a PASS condition reading "all six produced evidence" sends the commonest
-partial run - the one the roll-up rule at the end of Step 2 exists for - to PASS
-under a table showing an N/V cell, and PASS WITH GAPS is reachable only when a
-category resolved nothing at all.
+Every rung states its own coverage condition, so all six are exclusive and the
+order of the lines cannot decide a run. Coverage splits the two rungs that
+report findings for the same reason it splits the two that report none: a
+category that resolved two items and left seven N/V has produced evidence while
+counting nothing toward coverage, so a condition reading "all six produced
+evidence" sends the commonest partial run - the one the roll-up rule at the end
+of Step 2 exists for - to the unqualified rung under a table showing an N/V
+cell. The split used to run on the clean half of the ladder only, and one P2
+found in the one category a screenshot can finish took the same four words as a
+screen that cleared all six. The count was on the line in both runs; the word a
+reader stops at was the same, and the word is what a merge gate acts on. The
+ladder answers two questions - did anything fail, and was everything looked at -
+so it closes at these six rungs and no further one is reachable.
 
-Coverage never upgrades a verdict, and PASS is the one outcome it can veto: a
-run that found nothing wrong in two categories and could not see the other
-four is not the same result as a screen that cleared all six. Count the
+Coverage never upgrades a verdict, and it qualifies every rung whose first word
+is PASS: a run that found nothing wrong in two categories and could not see the
+other four is not the same result as a screen that cleared all six, and a run
+that found one P2 in those two categories is not the same result either. Count
+the
 categories where every item resolved to PASS or FAIL with none left N/V, put
 `Coverage: <n>/6 categories verifiable` on the verdict line whatever the verdict
 is, and when `n` is below 6 name the N/V categories and what would unlock each.
@@ -309,7 +317,9 @@ was checked.
   one of nine states, not the category. If the run found nothing wrong anywhere,
   the verdict is PASS WITH GAPS: the category produced evidence but did not
   finish, so it does not count toward coverage, and `Coverage: 6/6` is what PASS
-  asks for.
+  asks for. If it found a P1 or P2 anywhere, the verdict is PASS WITH FOLLOW-UPS
+  AND GAPS, on the same reading of the same count - the findings decide which
+  pair of rungs the run is on, coverage decides which of the two.
 - **A category that failed before it finished.** Contrast samples one pair
   below threshold and cannot reach two others: the cell is FAIL, the failure
   keeps its severity and its fix line, and the category counts toward neither
