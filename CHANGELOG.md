@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.11.0] - 2026-10-18
+
+- The verdict line ended `Fix P0s before merge.` and 1.9.0 had already established the case where that instruction cannot be followed: a P0 whose real fix is larger than the merge - a keyboard trap inside a vendor date picker, a contrast breach carried by a design-system token - where Step 3 asks After to state the real fix at its real size. The skill named the conflict in two places and took no position on it, deferred twice before this run.
+- Both ways of making the old line read true were already failures the skill names elsewhere, which is what settles it. Shrinking the After until it fits the hour bound is the workaround Step 3 rules out, and re-tagging the P0 as P1 so the verdict leaves FAIL breaks the rule that a tag tracks the criterion breached and not the calendar its fix lands on. With neither available, the instruction was the thing that had to move.
+- The line now states the condition and names the one exit: the merge is blocked until each P0 is closed or recorded as an accepted breach - the criterion, the real fix at its real size, an owner, and the interim mitigation where Step 3 produced one. Accepting a breach is the team's call and the gate does not make it; the gate's output is that the record exists and still reads as a breach. A P0 written at its real size is also named on the verdict line with where its fix lands, so a blocked merge is not read against a fix list that does not contain the blocker.
+- An accepted breach moves nothing else. The verdict stays FAIL, the tag stays P0, the fix line stays in the list, and coverage is untouched, because the screen was inspected exactly as well either way. A breach filed as a pass is a breach nobody tracks, which is the workaround failure arriving one line further down.
+- `Verdict logic - first match wins` is now `Verdict logic - the six rungs`. 1.10.0 made all six rungs mutually exclusive and said in the paragraph below that the order of the lines cannot decide a run, which left the heading promising a property nothing depends on and telling a reader the order matters.
+- New edge case, a new How it works bullet, and a `What FAIL asks of the merge` section in both `SKILL.md` and `references/qa-checklist.md`, the reference carrying it as four boxes. The FAQ answer on a P0 larger than an hour now renders the verdict line in that shape, since neither worked example has a structural P0 and the branch had no rendered instance anywhere in the repo.
+- Both worked-example verdict lines carry the new wording and say their P0s close in the PR. No severity rule, roll-up rule, ladder rung or coverage count moved - verified.
+- Seen and not taken: the N/V abbreviation is expanded on first use in Step 2 and used bare in the Step 4 template and the edge cases, while the rendered examples print it in the table with no key, so a reader meeting the output before the skill has nothing to expand it from.
+
 ## [1.10.0] - 2026-10-13
 
 - A run with findings and a coverage gap has its own verdict, `PASS WITH FOLLOW-UPS AND

@@ -208,10 +208,11 @@ larger than the bound, After states it at its real size and names what it
 touches instead of shrinking to fit: `replace or patch the vendor date picker
 (vendor-side fix, not an afternoon)`. Shrinking it is the failure the bound
 invites - an After small enough to pass the bound describes a workaround, the
-breach stays live, and the verdict line directly below still says to fix P0s
-before merge. An interim mitigation can ride along on the same line where one
+breach stays live, and the verdict line directly below still blocks the merge
+on it. An interim mitigation can ride along on the same line where one
 exists, labeled as holding the line rather than closing it, under the real
-fix and never in place of it.
+fix and never in place of it. A P0 written at its real size is also the one
+the verdict line names: see what FAIL asks of the merge, in Step 4.
 
 ## Step 4 - render the output
 
@@ -239,15 +240,16 @@ Exact shape:
    Before: ...
    After: ...
 
-**Verdict: FAIL** - <N> P0 issue(s) in <category list>. Fix P0s before
-merge.
+**Verdict: FAIL** - <N> P0 issue(s) in <category list>. The merge is blocked
+until each is closed or recorded as an accepted breach. <For each P0 whose
+After is stated at its real size: name it and say where the fix lands.>
 Coverage: <n>/6 categories verifiable. <When n < 6, add whichever of these
 two groups has members:> Not verifiable: <category list> - <what input would
 resolve it>. <category> ended FAIL with <k> of <m> items unresolved - <what
 input would finish it>.
 ```
 
-Verdict logic - first match wins:
+Verdict logic - the six rungs:
 
 - **FAIL** - one or more P0 issues anywhere.
 - **NOT VERIFIABLE** - no P0, and not one item in any category resolved. The
@@ -301,6 +303,41 @@ its severity and its fix line. NOT VERIFIABLE is for the run where no item
 anywhere resolved, which is the only case where an empty fix list means nothing
 was checked.
 
+### What FAIL asks of the merge
+
+FAIL blocks the merge, at any coverage - a P0 is a breach of a named criterion
+and the count beside it changes nothing about that. Everything below is about
+what the line says next, not about whether the gate blocks.
+
+The line said `Fix P0s before merge` until it met the branch Step 3 already
+carries: a P0 whose real fix is larger than the merge. A keyboard trap inside a
+third-party date picker is closed by patching or replacing the widget, and a
+contrast breach carried by a design-system token is closed in the token set and
+at every call site. Neither lands before a PR merges, so the instruction asks
+for something the run has already shown cannot happen, and both ways of making
+it read true are failures this skill names elsewhere: shrink the After until it
+fits the hour bound, which Step 3 rules out because the breach stays live behind
+a workaround, or re-tag the P0 as P1 so the verdict leaves FAIL, which the
+severity rules rule out because a tag tracks the criterion that was breached and
+not the calendar the fix lands on.
+
+So the line states the condition and names the only exit. The merge is blocked
+until each P0 is closed, or until it is recorded as an accepted breach: the
+criterion, the real fix at its real size, who owns it, and the interim
+mitigation where Step 3 produced one, labeled as holding the line rather than
+closing it. Accepting a breach is a call the people shipping make with what is
+in front of them; the gate's job is that the record exists and says what is
+live. Where a P0's After is already written at its real size, name that P0 on
+the verdict line and say where its fix lands, so the two are read together
+rather than the reader meeting a blocked merge and an afternoon-sized fix list
+that does not contain the blocker.
+
+An accepted breach moves nothing else. The verdict stays FAIL, the tag stays P0,
+the fix line stays in the list, and coverage is unchanged - the screen was
+inspected exactly as well either way. A record that reads as a pass is how a
+breach stops being tracked, which is the same failure as a workaround standing
+in for a fix, arriving one line further down.
+
 ## Edge cases
 
 - **Single static screenshot.** States, keyboard, and often responsive land
@@ -327,6 +364,13 @@ was checked.
   group, with what would finish it. Counted, plus not verifiable, plus
   failed-but-unfinished comes to six, and a line carrying only the first two
   leaves the reader hunting for the categories missing from both.
+- **A P0 whose fix cannot land before the merge.** A keyboard trap in a vendor
+  widget, or a contrast breach carried by a token used in forty places. After
+  states the real fix at its real size (Step 3), the verdict stays FAIL, and
+  the verdict line names that P0 and where its fix lands. The merge proceeds
+  only as a recorded accepted breach, with an owner and the real fix against
+  it; it is never unblocked by shrinking the After to a workaround or by
+  moving the finding to P1.
 - **Dark mode supplied.** Run contrast as two separate rows, one per theme,
   in the same table.
 - **Design tokens supplied.** Check artifact values against the token set

@@ -157,3 +157,26 @@ A section that failed on one box with others still unread belongs to neither
 list under the count: it is not not-verifiable, and it is not counted. Name it
 on the verdict line separately, with what is missing, so counted plus
 not-verifiable plus failed-but-unfinished comes to six.
+
+## What FAIL asks of the merge
+
+The merge is blocked until every P0 is closed, or until the ones that cannot
+close here are recorded as an accepted breach. Some P0s are structural - a
+keyboard trap inside a vendor widget, a contrast breach carried by a token used
+everywhere - so their fix is written at its real size and does not land in the
+PR the gate ran against. Name those on the verdict line and say where the fix
+lands, so a reader does not meet a blocked merge above a fix list that does not
+contain the blocker.
+
+A recorded accepted breach carries the criterion, the real fix at its real size,
+an owner, and the interim mitigation if one exists, labeled as holding the line
+rather than closing it. Whether to accept it is the team's call. What the gate
+holds is the record, and the record keeps saying FAIL and P0:
+
+- [ ] No P0 was re-tagged P1 to move the verdict off FAIL - a tag tracks the
+      criterion breached, not the date its fix lands
+- [ ] No After was shrunk to a workaround so it would fit the hour bound
+- [ ] Every P0 not closing in this PR is named on the verdict line with where
+      its fix lands, and is recorded with an owner
+- [ ] Coverage is unchanged by any of it - the screen was inspected exactly as
+      well either way

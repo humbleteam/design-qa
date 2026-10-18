@@ -124,8 +124,9 @@ gate does with the categories it cannot finish.
    After: add `:disabled { background: #f1f1f1; color: #6b6b6b; cursor: not-allowed; }`
    (4.72:1, still legible) and set the attribute for the duration of the request
 
-**Verdict: FAIL** - 3 P0 issues (contrast, responsive, keyboard). Fix P0s
-before merge.
+**Verdict: FAIL** - 3 P0 issues (contrast, responsive, keyboard). The merge is
+blocked until each is closed or recorded as an accepted breach. All three close
+in this PR.
 Coverage: 6/6 categories verifiable.
 ```
 
@@ -154,7 +155,8 @@ a verdict somebody can act on.
    Before: #9B9B9B on #FFFFFF = 2.78:1, on all 4 helper lines under the form fields
    After: darken to #757575 (4.61:1), the smallest change that clears SC 1.4.3
 
-**Verdict: FAIL** - 1 P0 issue (contrast). Fix P0s before merge.
+**Verdict: FAIL** - 1 P0 issue (contrast). The merge is blocked until it is
+closed or recorded as an accepted breach. It closes in this PR.
 Coverage: 2/6 categories verifiable. Not verifiable: component states (a hover, focus and
 disabled frame, or the CSS), responsive (a capture at 320px), keyboard (the CSS/JS or a
 drivable URL). Contrast ended FAIL with 2 of 5 pairs unresolved - the meaningful-icon and
@@ -198,6 +200,11 @@ were finished, three could not start, one found a failure before it finished: si
   problem; After is a change implementable in under an hour. Where the real fix
   is larger, which a P0 inside a third-party component often is, After states
   the real fix at its real size instead of a workaround that fits the bound.
+- FAIL blocks the merge, and the line says what unblocks it: every P0 closed,
+  or the ones that cannot close here recorded as an accepted breach with an
+  owner and the real fix. The gate does not decide whether to accept one - it
+  decides that the record exists and still reads as a breach. A P0 is never
+  unblocked by shrinking its fix to a workaround or by re-tagging it P1.
 - A supplied design-token file is checked against first, ahead of generic
   heuristics.
 - The full checklist stands alone as a manual reference:
@@ -263,8 +270,23 @@ design-system token is closed in the token set and at every call site. Write the
 real fix at its real size, and put any interim mitigation under it, labeled as
 holding the line rather than closing it. What the shape will not accept is a
 workaround small enough to fit the hour standing in as the fix, because the
-verdict line directly below says to fix P0s before merge and the breach would
-still be live.
+verdict line directly below still blocks the merge on that P0 and the breach
+would still be live.
+
+The verdict line then names it, because a blocked merge over a fix nobody in
+the PR can make is the one case where the two halves of the output have to be
+read together:
+
+```
+**Verdict: FAIL** - 1 P0 issue (keyboard). The merge is blocked until it is
+closed or recorded as an accepted breach. The trap is inside the vendor date
+picker, so the fix is vendor-side and does not land in this PR.
+```
+
+Shipping anyway is a call the team makes, not one the gate makes. What the gate
+requires is that it is recorded as an accepted breach - the criterion, the real
+fix, an owner, and the mitigation if there is one - and that the record keeps
+saying FAIL and P0, because a breach filed as a pass is a breach nobody tracks.
 
 **What's the difference between this and a design review?**
 This skill checks pass/fail criteria against fixed standards. A design
