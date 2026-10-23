@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.12.0] - 2026-10-23
+
+- `N/V` was expanded once, in Step 2, and then printed bare in every place a reader actually meets it: the Step 4 status table, the second worked example, and the roll-up rule in `references/qa-checklist.md`. Logged on 10-18 and taken today.
+- Distance to the key was not the problem; the key was absent from the artifact. The report is written to be pasted into a PR description or a ticket, and the checklist says at the top to copy its tables into a PR or a ticket and work them by hand. In both of those places the skill is nowhere in reach, so a reader meeting the output first has nothing to expand the abbreviation from.
+- The output now carries its own key. One line under the status table, `N/V = not verifiable from this input`, printed whenever a status cell reads N/V and dropped when none does. The condition sits in the template rather than in a note about it, because a key to a symbol that is not on the page is the other way to make a reader stop.
+- The second worked example gains the line, where three of six cells read N/V. The first does not: its six cells are PASS and FAIL only, checked rather than assumed.
+- `references/qa-checklist.md` expands the abbreviation at its first use in the coverage reference, in the same parenthetical form Step 2 uses, since that file travels on its own.
+- Nothing about the gate moved. No rung, severity, roll-up rule or coverage count changed, and the verdict line is untouched - it spells "Not verifiable" out in words, which is why the status table was the one place the short form stood alone.
+- Seen and not taken, for the next run on this repo: the README's how-it-works bullet on the verdict names four of the six rungs - PASS, PASS WITH GAPS, PASS WITH FOLLOW-UPS AND GAPS, NOT VERIFIABLE - and FAIL is named in a later bullet, which leaves PASS WITH FOLLOW-UPS, the result of a fully covered run that found a P1 or a P2, as the one rung the README never states.
+
 ## [1.11.0] - 2026-10-18
 
 - The verdict line ended `Fix P0s before merge.` and 1.9.0 had already established the case where that instruction cannot be followed: a P0 whose real fix is larger than the merge - a keyboard trap inside a vendor date picker, a contrast breach carried by a design-system token - where Step 3 asks After to state the real fix at its real size. The skill named the conflict in two places and took no position on it, deferred twice before this run.

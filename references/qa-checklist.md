@@ -129,12 +129,12 @@ box resolved, and put `Coverage: <n>/6` on the verdict line.
 
 Each section above holds more than one box - nine in section 1, five in section
 2 - and one section is one status cell, so the boxes roll up by precedence:
-**FAIL** if any box failed, otherwise **N/V** if any box could not be checked,
-and **PASS** only when every box resolved and none failed. A section counts
-toward `<n>` only when nothing in it is left unchecked, whichever of the three
-it ended on. Status answers whether anything failed; coverage answers whether
-everything was looked at, and a section with a known failure and six unread
-boxes is not a fully inspected section.
+**FAIL** if any box failed, otherwise **N/V** (not verifiable from this input)
+if any box could not be checked, and **PASS** only when every box resolved and
+none failed. A section counts toward `<n>` only when nothing in it is left
+unchecked, whichever of the three it ended on. Status answers whether anything
+failed; coverage answers whether everything was looked at, and a section with a
+known failure and six unread boxes is not a fully inspected section.
 
 | Coverage | No issues found | Issues found |
 |---|---|---|

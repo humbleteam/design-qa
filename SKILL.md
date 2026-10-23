@@ -230,6 +230,9 @@ Exact shape:
 | Keyboard | PASS / FAIL / N/V | <one line> |
 | Copy | PASS / FAIL / N/V | <one line> |
 
+N/V = not verifiable from this input. <Keep this line whenever a status cell
+reads N/V; drop it when none does.>
+
 ## Fixes
 
 1. <title> - P0
@@ -248,6 +251,13 @@ two groups has members:> Not verifiable: <category list> - <what input would
 resolve it>. <category> ended FAIL with <k> of <m> items unresolved - <what
 input would finish it>.
 ```
+
+The legend is part of the output, not a courtesy. `N/V` is expanded once, in Step 2,
+and the status table is the only place a reader meets the short form: the verdict line
+spells "Not verifiable" out in words, and so do the rungs. A report is read where it is
+pasted - a PR description, a ticket, a review thread - with the skill nowhere in reach,
+so one line under the table is what the abbreviation costs to carry. Drop it when no cell
+reads N/V, because a key to an absent symbol is the other way to make a reader stop.
 
 Verdict logic - the six rungs:
 

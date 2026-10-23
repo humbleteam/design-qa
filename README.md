@@ -149,6 +149,8 @@ a verdict somebody can act on.
 | Keyboard | N/V | A static image shows no focus order, no focus indicator and no trap |
 | Copy | PASS | 7 labels and 2 buttons legible: sentence case, verb labels, icon and label agree; the visible error names the cause and the next step |
 
+N/V = not verifiable from this input.
+
 ## Fixes
 
 1. Helper text fails contrast - P0
