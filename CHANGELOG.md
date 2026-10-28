@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.1] - 2026-10-28
+
+- The README's how-it-works bullet on the verdict named four of the six rungs - PASS, PASS WITH GAPS, PASS WITH FOLLOW-UPS AND GAPS, NOT VERIFIABLE - with FAIL stated in two other bullets, which left PASS WITH FOLLOW-UPS as the one rung the README never stated. Logged on 10-23 and taken today.
+- The missing rung is the commonest result a full-coverage run on a real PR reaches: six categories checked, no P0, a P1 or two in the fix list. That bullet is the only verdict ladder a README reader meets, so a reader working from it alone had nothing to call that run but PASS.
+- With the rung absent, PASS's stated condition did not have to be exclusive, and it was not. "PASS needs all six categories actually checked" is equally true of PASS WITH FOLLOW-UPS, and the two are separated by findings rather than by coverage. The bullet now carries the clean half as well - all six checked and nothing found at any severity - which is the condition the rung list in SKILL.md and the roll-up table in `references/qa-checklist.md` both already state.
+- Nothing about the gate moved. No rung, condition, severity or coverage rule changed, and the reference checklist's roll-up table already named all six rungs correctly, which is why the defect sat in the README alone.
+- Seen and not taken, for the next run on this repo: the bullet now lists five rungs and keys every one of them to coverage, without saying that FAIL is the one the count leaves alone. `references/qa-checklist.md` says it in words under its table and SKILL.md says coverage qualifies every rung whose first word is PASS, so the README is the only place the ladder can still be read as six rungs the count all moves.
+
 ## [1.12.0] - 2026-10-23
 
 - `N/V` was expanded once, in Step 2, and then printed bare in every place a reader actually meets it: the Step 4 status table, the second worked example, and the roll-up rule in `references/qa-checklist.md`. Logged on 10-18 and taken today.
