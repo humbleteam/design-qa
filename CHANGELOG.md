@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.2] - 2026-11-06
+
+- The README's verdict ladder keyed all five rungs it named to coverage and left FAIL out of the list, so the one rung coverage does not qualify was the one the ladder never stated. Read on its own the bullet was not merely incomplete, it was wrong on the case that matters most: "a run with findings and gaps comes back PASS WITH FOLLOW-UPS AND GAPS" takes a P0 as a finding, so a merge-blocking breach found in a partly checked screen reached a pass word, in the same bullet that opens by saying a gate rounding uncertainty up to "pass" isn't a gate.
+- `SKILL.md` and `references/qa-checklist.md` were both already right, which is why the defect sat in the README alone. The rung list in Step 4 gives FAIL as "one or more P0 issues anywhere" with no coverage condition and carries "no P0" on each of the other five, and the reference's roll-up table says it in words under itself: coverage qualifies both columns and FAIL is the one word it leaves alone, because a P0 blocks the merge at any coverage.
+- The bullet now states FAIL first, as the rung one or more P0 issues reaches at any coverage, says the count leaves that rung alone and why, and puts the remaining five under an explicit "with no P0", which is the condition that makes them exclusive. The five keep their own wording and order.
+- Patch rather than minor: nothing about the gate moved. The verdict logic, the six rungs and their conditions are unchanged in SKILL.md and in the reference, and no example's verdict line changes - the three worked examples already read FAIL with their P0 counts.
+
 ## [1.12.1] - 2026-10-28
 
 - The README's how-it-works bullet on the verdict named four of the six rungs - PASS, PASS WITH GAPS, PASS WITH FOLLOW-UPS AND GAPS, NOT VERIFIABLE - with FAIL stated in two other bullets, which left PASS WITH FOLLOW-UPS as the one rung the README never stated. Logged on 10-23 and taken today.
