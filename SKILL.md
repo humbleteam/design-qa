@@ -106,6 +106,31 @@ do about it ("Card declined - check the number and try again" passes;
 "Something went wrong" fails). This category is verifiable from a screenshot
 whenever text is legible in it.
 
+### Rolling item results into one category status
+
+Every category above checks more than one thing: nine states in category 1, one
+row per text and non-text pair in category 2, every interactive target in
+category 3. The table in Step 4 has one status cell per category, and the items
+inside a category routinely disagree, so the roll-up needs a rule instead of a
+judgment call each run. Resolve the cell by precedence, highest first:
+
+1. **FAIL** if any item in the category failed. A found failure stands whatever
+   else could not be checked.
+2. **N/V** if nothing failed and at least one item could not be checked. A
+   category where two items passed and seven were invisible has not been
+   checked, and PASS would claim it was.
+3. **PASS** only when every item resolved and none failed.
+
+The evidence cell then names the split rather than one example, so N/V does not
+erase the items that did pass: `2 of 9 states verifiable (default, focus); no
+hover, active, disabled, loading, empty, error or overflow rule in the input`.
+
+Coverage counts the same way: a category counts toward `<n>/6` only when no item
+in it is left N/V, whether it ended PASS or FAIL. The status cell answers whether
+anything failed, the coverage number answers whether everything was looked at,
+and a failure found in a category nobody could finish inspecting is not full
+coverage of that category.
+
 ## Step 3 - assign severity and write fixes
 
 Every FAIL gets one severity tag:
@@ -154,12 +179,40 @@ Write each fix as:
 ```
 N. <short title> - P<0/1/2>
    Before: <specific, observable fact - what's actually there>
-   After: <concrete fix, implementable in under an hour>
+   After: <concrete fix - implementable in under an hour, or the real fix at
+   its real size when it is larger>
 ```
 
-Cap the list at the most-impactful items if there are many; do not pad with
-trivial duplicates of the same issue on different elements - group repeats
-into one fix line and note the count ("applies to all 4 nav icons").
+Every FAIL in the table has a line here, and the list is ordered rather than
+trimmed: P0 first, then P1, then P2, and inside a tag the category order of
+the table above. Ordering is what puts the most-impactful items first. A cap
+would instead drop failures the table already reported, which is the illegal
+move the severity rules above name and which
+[references/qa-checklist.md](references/qa-checklist.md) states as nothing
+that failed is left out of the fix list.
+
+Grouping is the one thing that shortens the list. The same failure on several
+elements is one line carrying the count ("applies to all 4 nav icons"),
+because one fix closes all of them. Failures needing separate fixes stay
+separate lines however many there are - a screen with twenty distinct
+failures gets twenty lines, and the length is itself the finding.
+
+The hour bound on After is there to keep a fix concrete: `improve
+keyboard support` is not a fix. It bounds how the fix is written, and it is
+not a test a finding has to pass to be reported. P0 is the tag most likely
+to exceed it, because a binary criterion breach is often structural - a
+keyboard trap inside a third-party date picker is closed by patching or
+replacing the widget, and a contrast breach carried by a design-system token
+is closed in the token set and at every call site. Where the real fix is
+larger than the bound, After states it at its real size and names what it
+touches instead of shrinking to fit: `replace or patch the vendor date picker
+(vendor-side fix, not an afternoon)`. Shrinking it is the failure the bound
+invites - an After small enough to pass the bound describes a workaround, the
+breach stays live, and the verdict line directly below still blocks the merge
+on it. An interim mitigation can ride along on the same line where one
+exists, labeled as holding the line rather than closing it, under the real
+fix and never in place of it. A P0 written at its real size is also the one
+the verdict line names: see what FAIL asks of the merge, in Step 4.
 
 ## Step 4 - render the output
 
@@ -177,6 +230,9 @@ Exact shape:
 | Keyboard | PASS / FAIL / N/V | <one line> |
 | Copy | PASS / FAIL / N/V | <one line> |
 
+N/V = not verifiable from this input. <Keep this line whenever a status cell
+reads N/V; drop it when none does.>
+
 ## Fixes
 
 1. <title> - P0
@@ -187,29 +243,110 @@ Exact shape:
    Before: ...
    After: ...
 
-**Verdict: FAIL** - <N> P0 issue(s) in <category list>. Fix P0s before
-merge.
-Coverage: <n>/6 categories verifiable. <If n < 6, add:> Not verifiable:
-<category list> - <what input would resolve it>.
+**Verdict: FAIL** - <N> P0 issue(s) in <category list>. The merge is blocked
+until each is closed or recorded as an accepted breach. <For each P0 whose
+After is stated at its real size: name it and say where the fix lands.>
+Coverage: <n>/6 categories verifiable. <When n < 6, add whichever of these
+two groups has members:> Not verifiable: <category list> - <what input would
+resolve it>. <category> ended FAIL with <k> of <m> items unresolved - <what
+input would finish it>.
 ```
 
-Verdict logic - first match wins:
+The legend is part of the output, not a courtesy. `N/V` is expanded once, in Step 2,
+and the status table is the only place a reader meets the short form: the verdict line
+spells "Not verifiable" out in words, and so do the rungs. A report is read where it is
+pasted - a PR description, a ticket, a review thread - with the skill nowhere in reach,
+so one line under the table is what the abbreviation costs to carry. Drop it when no cell
+reads N/V, because a key to an absent symbol is the other way to make a reader stop.
+
+Verdict logic - the six rungs:
 
 - **FAIL** - one or more P0 issues anywhere.
-- **NOT VERIFIABLE** - no P0, and no category produced evidence. The gate did
-  not run; say which input would let it run, and never render this as a pass.
-- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2, at least one
-  category with evidence.
-- **PASS** - zero issues at any severity, and all six categories produced
-  evidence.
-- **PASS WITH GAPS** - zero issues found, but one or more categories are N/V.
+- **NOT VERIFIABLE** - no P0, and not one item in any category resolved. The
+  gate did not run; say which input would let it run, and never render this as
+  a pass.
+- **PASS WITH FOLLOW-UPS** - no P0, at least one P1 or P2, and `Coverage: 6/6`.
+- **PASS WITH FOLLOW-UPS AND GAPS** - no P0, at least one P1 or P2, and
+  coverage below 6.
+- **PASS** - zero issues at any severity and `Coverage: 6/6` - every category
+  resolved every item it opened.
+- **PASS WITH GAPS** - zero issues found, coverage below 6, and at least one
+  item resolved somewhere.
 
-Coverage never upgrades a verdict, and PASS is the one outcome it can veto: a
-run that found nothing wrong in two categories and could not see the other
-four is not the same result as a screen that cleared all six. Count the
-categories that produced evidence, put `Coverage: <n>/6 categories verifiable`
-on the verdict line whatever the verdict is, and when `n` is below 6 name the
-N/V categories and what would unlock each.
+Every rung states its own coverage condition, so all six are exclusive and the
+order of the lines cannot decide a run. Coverage splits the two rungs that
+report findings for the same reason it splits the two that report none: a
+category that resolved two items and left seven N/V has produced evidence while
+counting nothing toward coverage, so a condition reading "all six produced
+evidence" sends the commonest partial run - the one the roll-up rule at the end
+of Step 2 exists for - to the unqualified rung under a table showing an N/V
+cell. The split used to run on the clean half of the ladder only, and one P2
+found in the one category a screenshot can finish took the same four words as a
+screen that cleared all six. The count was on the line in both runs; the word a
+reader stops at was the same, and the word is what a merge gate acts on. The
+ladder answers two questions - did anything fail, and was everything looked at -
+so it closes at these six rungs and no further one is reachable.
+
+Coverage never upgrades a verdict, and it qualifies every rung whose first word
+is PASS: a run that found nothing wrong in two categories and could not see the
+other four is not the same result as a screen that cleared all six, and a run
+that found one P2 in those two categories is not the same result either. Count
+the
+categories where every item resolved to PASS or FAIL with none left N/V, put
+`Coverage: <n>/6 categories verifiable` on the verdict line whatever the verdict
+is, and when `n` is below 6 name the N/V categories and what would unlock each.
+
+Name the categories that ended FAIL with items still unchecked on that line too,
+with what is missing, kept separate from the N/V list. Such a category is in
+neither group the line currently reports: it is not N/V, because it found a
+failure, and it does not count toward `<n>`, because it was never finished. Leave
+it out and the line stops adding up - `Coverage: 2/6` above three named N/V
+categories sends the reader hunting for a fourth. The three numbers are meant to
+reconcile: categories counted, plus categories not verifiable, plus categories
+that failed before they finished, equals six.
+
+`Coverage: 0/6` and NOT VERIFIABLE are different tests and must not be collapsed.
+Coverage counts categories finished to the last item, so a run that read three
+states and a contrast pair and could see nothing else reports 0/6 while having
+produced real evidence - and a failure among those items is a finding that keeps
+its severity and its fix line. NOT VERIFIABLE is for the run where no item
+anywhere resolved, which is the only case where an empty fix list means nothing
+was checked.
+
+### What FAIL asks of the merge
+
+FAIL blocks the merge, at any coverage - a P0 is a breach of a named criterion
+and the count beside it changes nothing about that. Everything below is about
+what the line says next, not about whether the gate blocks.
+
+The line said `Fix P0s before merge` until it met the branch Step 3 already
+carries: a P0 whose real fix is larger than the merge. A keyboard trap inside a
+third-party date picker is closed by patching or replacing the widget, and a
+contrast breach carried by a design-system token is closed in the token set and
+at every call site. Neither lands before a PR merges, so the instruction asks
+for something the run has already shown cannot happen, and both ways of making
+it read true are failures this skill names elsewhere: shrink the After until it
+fits the hour bound, which Step 3 rules out because the breach stays live behind
+a workaround, or re-tag the P0 as P1 so the verdict leaves FAIL, which the
+severity rules rule out because a tag tracks the criterion that was breached and
+not the calendar the fix lands on.
+
+So the line states the condition and names the only exit. The merge is blocked
+until each P0 is closed, or until it is recorded as an accepted breach: the
+criterion, the real fix at its real size, who owns it, and the interim
+mitigation where Step 3 produced one, labeled as holding the line rather than
+closing it. Accepting a breach is a call the people shipping make with what is
+in front of them; the gate's job is that the record exists and says what is
+live. Where a P0's After is already written at its real size, name that P0 on
+the verdict line and say where its fix lands, so the two are read together
+rather than the reader meeting a blocked merge and an afternoon-sized fix list
+that does not contain the blocker.
+
+An accepted breach moves nothing else. The verdict stays FAIL, the tag stays P0,
+the fix line stays in the list, and coverage is unchanged - the screen was
+inspected exactly as well either way. A record that reads as a pass is how a
+breach stops being tracked, which is the same failure as a workaround standing
+in for a fix, arriving one line further down.
 
 ## Edge cases
 
@@ -221,17 +358,29 @@ N/V categories and what would unlock each.
   no legible text and no solid-fill color to sample, supports none of the six
   categories. The verdict is NOT VERIFIABLE, never PASS: an empty fix list
   here means nothing was checked, not that nothing was wrong.
-- **A color with transparency in CSS.** Secondary text written as
-  `rgba(0,0,0,0.6)`, a border at 20% alpha, or `opacity` on a disabled
-  button is not a hex value the contrast formula can take. Fed in as written,
-  the alpha is dropped and the color reads as fully opaque, so
-  `rgba(0,0,0,0.4)` on white scores 21:1 and passes when the rendered gray is
-  2.85:1 and fails. Composite it first over the background actually behind
-  it - the nearest ancestor with an opaque background, not the element's own
-  `background` - then compute (formula and worked example in
-  [references/qa-checklist.md](references/qa-checklist.md)). If the color
-  behind is an image or a gradient, mark the pair N/V, the same as for a
-  screenshot.
+- **A category where some items pass and others cannot be checked.** The cell
+  is N/V, not PASS, and the evidence names both halves - see the roll-up rule
+  at the end of Step 2. A screenshot showing a clean default state has verified
+  one of nine states, not the category. If the run found nothing wrong anywhere,
+  the verdict is PASS WITH GAPS: the category produced evidence but did not
+  finish, so it does not count toward coverage, and `Coverage: 6/6` is what PASS
+  asks for. If it found a P1 or P2 anywhere, the verdict is PASS WITH FOLLOW-UPS
+  AND GAPS, on the same reading of the same count - the findings decide which
+  pair of rungs the run is on, coverage decides which of the two.
+- **A category that failed before it finished.** Contrast samples one pair
+  below threshold and cannot reach two others: the cell is FAIL, the failure
+  keeps its severity and its fix line, and the category counts toward neither
+  `<n>/6` nor the not-verifiable list. Name it on the verdict line as its own
+  group, with what would finish it. Counted, plus not verifiable, plus
+  failed-but-unfinished comes to six, and a line carrying only the first two
+  leaves the reader hunting for the categories missing from both.
+- **A P0 whose fix cannot land before the merge.** A keyboard trap in a vendor
+  widget, or a contrast breach carried by a token used in forty places. After
+  states the real fix at its real size (Step 3), the verdict stays FAIL, and
+  the verdict line names that P0 and where its fix lands. The merge proceeds
+  only as a recorded accepted breach, with an owner and the real fix against
+  it; it is never unblocked by shrinking the After to a workaround or by
+  moving the finding to P1.
 - **Dark mode supplied.** Run contrast as two separate rows, one per theme,
   in the same table.
 - **Design tokens supplied.** Check artifact values against the token set

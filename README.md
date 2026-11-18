@@ -70,8 +70,9 @@ Paste `SKILL.md` into the system prompt or a project rules file.
 ## Usage
 
 - "QA this screenshot before we ship it" - runs the full gate against a
-  pasted image; states and keyboard checks come back mostly "not
-  verifiable" with a note on what would unlock them.
+  pasted image; states and keyboard come back "not verifiable" with a note
+  on what would unlock them, since one static frame shows one of the nine
+  states and none of the keyboard behavior.
 - "Run a design QA pass on this PR" - point it at the changed HTML/CSS
   files; every category is fully checkable from source.
 - "Is humbleteam.com/pricing ready to ship at mobile width?" - point it at
@@ -80,7 +81,12 @@ Paste `SKILL.md` into the system prompt or a project rules file.
 
 ## Example output
 
-The following is an illustrative example, not a real audit of any product.
+Two runs, both illustrative examples rather than real audits of any product. The first
+reads HTML/CSS, where every category is checkable. The second reads one screenshot, which
+is the input most of these runs actually get, and where the interesting part is what the
+gate does with the categories it cannot finish.
+
+### HTML/CSS input - full coverage
 
 ```
 # Design QA - checkout-summary.html
@@ -118,10 +124,52 @@ The following is an illustrative example, not a real audit of any product.
    After: add `:disabled { background: #f1f1f1; color: #6b6b6b; cursor: not-allowed; }`
    (4.72:1, still legible) and set the attribute for the duration of the request
 
-**Verdict: FAIL** - 3 P0 issues (contrast, responsive, keyboard). Fix P0s
-before merge.
+**Verdict: FAIL** - 3 P0 issues (contrast, responsive, keyboard). The merge is
+blocked until each is closed or recorded as an accepted breach. All three close
+in this PR.
 Coverage: 6/6 categories verifiable.
 ```
+
+### Single screenshot - partial coverage
+
+One frame of a settings panel, with the capture width stated as 1440px so targets can be
+measured against a real scale. Three categories cannot be finished from an image at all,
+contrast finds a failure and then runs out of sampleable pairs, and the run still returns
+a verdict somebody can act on.
+
+```
+# Design QA - settings-panel.png
+
+| Category | Status | Evidence |
+|---|---|---|
+| Component states | N/V | 2 of 9 states in frame (default, error); no hover, focus, active, disabled, loading, empty or overflow evidence in one image |
+| Contrast | FAIL | 3 of 5 pairs sampleable from solid fills; helper text #9B9B9B on #FFFFFF = 2.78:1 (needs 4.5:1) |
+| Touch targets | PASS | Capture width stated (1440px); all 6 controls measure 44x44 CSS px or larger, with clear spacing between adjacent ones |
+| Responsive | N/V | One capture at 1440px, nothing at or near 320px |
+| Keyboard | N/V | A static image shows no focus order, no focus indicator and no trap |
+| Copy | PASS | 7 labels and 2 buttons legible: sentence case, verb labels, icon and label agree; the visible error names the cause and the next step |
+
+N/V = not verifiable from this input.
+
+## Fixes
+
+1. Helper text fails contrast - P0
+   Before: #9B9B9B on #FFFFFF = 2.78:1, on all 4 helper lines under the form fields
+   After: darken to #757575 (4.61:1), the smallest change that clears SC 1.4.3
+
+**Verdict: FAIL** - 1 P0 issue (contrast). The merge is blocked until it is
+closed or recorded as an accepted breach. It closes in this PR.
+Coverage: 2/6 categories verifiable. Not verifiable: component states (a hover, focus and
+disabled frame, or the CSS), responsive (a capture at 320px), keyboard (the CSS/JS or a
+drivable URL). Contrast ended FAIL with 2 of 5 pairs unresolved - the meaningful-icon and
+focus-indicator pairs need the CSS or a frame with a control focused.
+```
+
+Component states reads N/V with two states verified, because a category is only as checked
+as its least-checked item. Contrast reads FAIL on one pair while two others were never
+sampled - a found failure stands whatever else is missing - and it counts toward neither
+`2/6` nor the not-verifiable list, so the verdict line names it separately. Two categories
+were finished, three could not start, one found a failure before it finished: six.
 
 ## How it works
 
@@ -134,9 +182,20 @@ Coverage: 6/6 categories verifiable.
 - A category with nothing to check against is reported as not verifiable,
   with a note on what would unlock it - a gate that rounds uncertainty up
   to "pass" isn't a gate. The verdict obeys the same rule: every run reports
-  `Coverage: <n>/6`, PASS needs all six categories actually checked, a clean
-  run with gaps comes back PASS WITH GAPS, and an artifact that supports no
-  category at all comes back NOT VERIFIABLE.
+  `Coverage: <n>/6`, and one or more P0 issues anywhere comes back FAIL at any
+  coverage. The count qualifies every other rung and leaves that one alone,
+  because a P0 blocks the merge whether six categories were checked or one.
+  With no P0: PASS needs all six categories actually checked and nothing found
+  at any severity, a fully covered run carrying a P1 or a P2 comes back PASS
+  WITH FOLLOW-UPS, a clean run with gaps comes back PASS WITH GAPS, a run with
+  findings and gaps comes back PASS WITH FOLLOW-UPS AND GAPS, and an artifact
+  that supports no category at all comes back NOT VERIFIABLE.
+- The same rule holds one level down, inside a category. Nine states and five
+  contrast pairs roll up to a single status cell: any failure makes it FAIL,
+  anything left unseen makes it not verifiable, and PASS means every item in
+  it was checked and passed. The evidence column names the split - two states
+  read, seven invisible - so a partly inspected category can't reach the
+  verdict line looking like a clean one.
 - Every failure gets a severity tag: P0 for a binary WCAG 2.2
   success-criterion breach, P1 for a real gap that isn't a legal-grade
   breach, P2 for polish. Only P0 forces the verdict to FAIL. Each of the nine
@@ -144,7 +203,14 @@ Coverage: 6/6 categories verifiable.
   be reported in the table and then quietly dropped from the fix list, and
   anything the map doesn't cover is P1 rather than an invented P0.
 - Fixes follow a Before/After shape: Before is the specific, observable
-  problem; After is a change implementable in under an hour.
+  problem; After is a change implementable in under an hour. Where the real fix
+  is larger, which a P0 inside a third-party component often is, After states
+  the real fix at its real size instead of a workaround that fits the bound.
+- FAIL blocks the merge, and the line says what unblocks it: every P0 closed,
+  or the ones that cannot close here recorded as an accepted breach with an
+  owner and the real fix. The gate does not decide whether to accept one - it
+  decides that the record exists and still reads as a breach. A P0 is never
+  unblocked by shrinking its fix to a workaround or by re-tagging it P1.
 - A supplied design-token file is checked against first, ahead of generic
   heuristics.
 - The full checklist stands alone as a manual reference:
@@ -199,6 +265,34 @@ order a person sees, or an error message that names the problem without
 saying what to do next. Those are three of the six categories in this gate.
 Keep a scanner in CI as the floor, and run this gate against the screens a
 PR actually changes.
+
+**What if a P0's fix takes longer than an hour?**
+Then After says so and states the real fix. The hour bound in the fix shape
+exists to stop "improve keyboard support" passing as a fix, not to decide what
+gets reported, and P0 is the tag most likely to exceed it: a binary WCAG breach
+is often structural. A keyboard trap inside a third-party widget is closed by
+patching or replacing the widget, and a contrast breach carried by a
+design-system token is closed in the token set and at every call site. Write the
+real fix at its real size, and put any interim mitigation under it, labeled as
+holding the line rather than closing it. What the shape will not accept is a
+workaround small enough to fit the hour standing in as the fix, because the
+verdict line directly below still blocks the merge on that P0 and the breach
+would still be live.
+
+The verdict line then names it, because a blocked merge over a fix nobody in
+the PR can make is the one case where the two halves of the output have to be
+read together:
+
+```
+**Verdict: FAIL** - 1 P0 issue (keyboard). The merge is blocked until it is
+closed or recorded as an accepted breach. The trap is inside the vendor date
+picker, so the fix is vendor-side and does not land in this PR.
+```
+
+Shipping anyway is a call the team makes, not one the gate makes. What the gate
+requires is that it is recorded as an accepted breach - the criterion, the real
+fix, an owner, and the mitigation if there is one - and that the record keeps
+saying FAIL and P0, because a breach filed as a pass is a breach nobody tracks.
 
 **What's the difference between this and a design review?**
 This skill checks pass/fail criteria against fixed standards. A design

@@ -45,24 +45,6 @@ Relative luminance: `L = 0.2126*R_lin + 0.7152*G_lin + 0.0722*B_lin`
 Contrast ratio: `(L1 + 0.05) / (L2 + 0.05)`, where `L1` is the lighter color's
 luminance and `L2` the darker one's, so the ratio is always >= 1.
 
-### Colors with transparency
-
-The formula above takes two opaque colors. A foreground or background with an
-alpha channel - `rgba()`, `hsla()`, an 8-digit hex, `opacity` on the element -
-is not a color yet. Composite it first, per channel, over the opaque color
-behind it:
-
-```
-c_out = alpha * c_fg + (1 - alpha) * c_bg
-```
-
-Then run the result through the formula. Worked example on a white page:
-`rgba(0,0,0,0.6)` composites to `#666666`, 5.74:1, a pass. `rgba(0,0,0,0.4)`
-composites to `#999999`, 2.85:1, a fail. Read without its alpha, either one is
-`#000000` at 21:1. The color behind is the nearest ancestor with an opaque
-background. If that ancestor's background is an image or a gradient, there is
-no single color to composite over, and the pair is N/V.
-
 ## 3. Touch / click targets - WCAG 2.2 SC 2.5.8
 
 - [ ] Every interactive target is at least 24x24 CSS px, including its
@@ -142,14 +124,59 @@ is left out of the fix list.
 
 ## Coverage reference
 
-Coverage decides which verdict is available. Count the categories that
-produced evidence and put `Coverage: <n>/6` on the verdict line.
+Coverage decides which verdict is available. Count the categories where every
+box resolved, and put `Coverage: <n>/6` on the verdict line.
+
+Each section above holds more than one box - nine in section 1, five in section
+2 - and one section is one status cell, so the boxes roll up by precedence:
+**FAIL** if any box failed, otherwise **N/V** (not verifiable from this input)
+if any box could not be checked, and **PASS** only when every box resolved and
+none failed. A section counts toward `<n>` only when nothing in it is left
+unchecked, whichever of the three it ended on. Status answers whether anything
+failed; coverage answers whether everything was looked at, and a section with a
+known failure and six unread boxes is not a fully inspected section.
 
 | Coverage | No issues found | Issues found |
 |---|---|---|
 | 6 of 6 | PASS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
-| 1-5 of 6 | PASS WITH GAPS | FAIL if any P0, else PASS WITH FOLLOW-UPS |
-| 0 of 6 | NOT VERIFIABLE | - |
+| 1-5 of 6 | PASS WITH GAPS | FAIL if any P0, else PASS WITH FOLLOW-UPS AND GAPS |
+| 0 of 6 | PASS WITH GAPS if any box resolved, else NOT VERIFIABLE | FAIL if any P0, else PASS WITH FOLLOW-UPS AND GAPS |
 
-PASS is the one verdict coverage can veto: it needs all six categories to have
-been checked, not merely to have turned up nothing.
+Coverage qualifies both columns. FAIL is the one word it leaves alone, because a
+P0 blocks the merge at any coverage and the count changes nothing about that.
+Everywhere else the word changes at the 6-of-6 line: the count says whether the
+screen was looked at, and a verdict that could be read as a clean bill has to
+carry that in the word and not only in the number beside it.
+
+`0 of 6` is not the same as NOT VERIFIABLE. A run can read a few boxes in
+several sections, finish none of them, and still have found something real;
+coverage reports 0 and the finding keeps its tag. NOT VERIFIABLE belongs to the
+run where no box anywhere resolved.
+
+A section that failed on one box with others still unread belongs to neither
+list under the count: it is not not-verifiable, and it is not counted. Name it
+on the verdict line separately, with what is missing, so counted plus
+not-verifiable plus failed-but-unfinished comes to six.
+
+## What FAIL asks of the merge
+
+The merge is blocked until every P0 is closed, or until the ones that cannot
+close here are recorded as an accepted breach. Some P0s are structural - a
+keyboard trap inside a vendor widget, a contrast breach carried by a token used
+everywhere - so their fix is written at its real size and does not land in the
+PR the gate ran against. Name those on the verdict line and say where the fix
+lands, so a reader does not meet a blocked merge above a fix list that does not
+contain the blocker.
+
+A recorded accepted breach carries the criterion, the real fix at its real size,
+an owner, and the interim mitigation if one exists, labeled as holding the line
+rather than closing it. Whether to accept it is the team's call. What the gate
+holds is the record, and the record keeps saying FAIL and P0:
+
+- [ ] No P0 was re-tagged P1 to move the verdict off FAIL - a tag tracks the
+      criterion breached, not the date its fix lands
+- [ ] No After was shrunk to a workaround so it would fit the hour bound
+- [ ] Every P0 not closing in this PR is named on the verdict line with where
+      its fix lands, and is recorded with an owner
+- [ ] Coverage is unchanged by any of it - the screen was inspected exactly as
+      well either way
