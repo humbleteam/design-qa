@@ -190,6 +190,12 @@ were finished, three could not start, one found a failure before it finished: si
   WITH FOLLOW-UPS, a clean run with gaps comes back PASS WITH GAPS, a run with
   findings and gaps comes back PASS WITH FOLLOW-UPS AND GAPS, and an artifact
   that supports no category at all comes back NOT VERIFIABLE.
+- Every category lands in exactly one of three places, so the three always
+  add up to six: counted (every box resolved), not verifiable (nothing to
+  check against), or failed but unfinished (one box already failed while
+  others were never read). The third is named on the verdict line with what
+  is missing, because a failure found early is real but does not make the
+  category checked.
 - The same rule holds one level down, inside a category. Nine states and five
   contrast pairs roll up to a single status cell: any failure makes it FAIL,
   anything left unseen makes it not verifiable, and PASS means every item in

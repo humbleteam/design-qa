@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.12.3] - 2026-11-19
+
+- `SKILL.md` and `references/qa-checklist.md` both place every category in one of three buckets - counted, not verifiable, and failed but unfinished - and require the three to add up to six. The README's how-it-works section named only the first two, so a reader working from it alone had nowhere to put a section that found a failure on its first box and never read the rest, and could take it as counted. Logged on 11-06 and taken today.
+- The section now carries a bullet naming all three buckets, what puts a category in each, and why the third is named separately on the verdict line. The second worked example already shows the case (Contrast, FAIL with two pairs unsampled) and needs no change.
+- Patch: nothing about the gate moved. No rung, severity or coverage rule changed.
+
 ## [1.12.2] - 2026-11-06
 
 - The README's verdict ladder keyed all five rungs it named to coverage and left FAIL out of the list, so the one rung coverage does not qualify was the one the ladder never stated. Read on its own the bullet was not merely incomplete, it was wrong on the case that matters most: "a run with findings and gaps comes back PASS WITH FOLLOW-UPS AND GAPS" takes a P0 as a finding, so a merge-blocking breach found in a partly checked screen reached a pass word, in the same bullet that opens by saying a gate rounding uncertainty up to "pass" isn't a gate.
