@@ -300,6 +300,14 @@ requires is that it is recorded as an accepted breach - the criterion, the real
 fix, an owner, and the mitigation if there is one - and that the record keeps
 saying FAIL and P0, because a breach filed as a pass is a breach nobody tracks.
 
+**Can I run it on a Figma design before any code exists?**
+Yes, as a screenshot: export the frame and paste it in. It is then read like any
+screenshot, so only static states are checked and anything the image cannot show
+(hover and focus without a matching frame, keyboard paths, reflow) is reported as
+not verifiable, with the frame or code that would finish it named. Export each
+state you want checked as its own frame. A written description of a screen is not
+enough to run the gate on.
+
 **What's the difference between this and a design review?**
 This skill checks pass/fail criteria against fixed standards. A design
 review judges subjective quality - hierarchy, polish, layout intent. Use

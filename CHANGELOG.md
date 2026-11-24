@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.13.0] - 2026-11-24
+
+- `README.md` FAQ: new answer on running the gate against a Figma design before code exists. An exported frame is a screenshot input (Step 1), so it gets the static-state coverage Step 2 allows, states the image cannot show are reported as not verifiable with the frame or code that would finish them, and a description alone still does not run the gate.
+
 ## [1.12.3] - 2026-11-19
 
 - `SKILL.md` and `references/qa-checklist.md` both place every category in one of three buckets - counted, not verifiable, and failed but unfinished - and require the three to add up to six. The README's how-it-works section named only the first two, so a reader working from it alone had nowhere to put a section that found a failure on its first box and never read the rest, and could take it as counted. Logged on 11-06 and taken today.
